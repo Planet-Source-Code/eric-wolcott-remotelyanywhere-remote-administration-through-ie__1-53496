@@ -1,0 +1,250 @@
+   
+
+.window {
+	background-color: white;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	border: 1px solid WindowFrame;
+	left: 18px;
+		
+	
+}
+
+.subwindow {
+	background-color: white;
+	color: black;
+	border: 1px solid WindowFrame;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	visibility: hidden;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=4);
+	z-index: 10001;
+}
+
+.titleBar {
+	
+		background-color: #2a669a;
+		color: white;
+		
+			width: 100%;
+		
+		height: 22px;
+		font-family: "MS Sans Serif", "Arial", "Helvetica", sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		text-align: left;
+		vertical-align: middle;
+		padding: 0px 2px 4px .5em;
+		margin: 0px;
+	
+	white-space: nowrap;
+	cursor: default;
+	overflow: hidden;
+}
+
+.titleBarButtons {
+  border-style: none;
+  border-width: 0px;
+  vertical-align: middle;
+  width: 50px;
+  height: 14px;
+}
+
+.clientArea {
+  background-color: white;
+  border-width: 0px;
+  color: black;
+  font-family: "Verdana", "Arial", "Helvetica", sans-serif;
+  font-size: 8pt;
+  margin: 0px 0px 0px 0px;
+  overflow: auto;
+  padding: 1px;
+}
+
+body, table, td, th, input, select 
+{
+	font-family: "Verdana", "Arial";
+	font-size: 8pt;
+}
+
+body	
+{
+	background-color: #8abdf0;
+	margin: 2px;
+	
+	width: auto;
+	height: auto;
+}
+
+body.title	
+{
+	background-color: white;
+	color: #000040;
+	topmargin: 2px;
+}
+
+h1 { font-size: 12pt; }
+h2 { font-size: 11pt; }
+h3 { font-size: 10pt; }
+
+
+a.helpLink {
+	color:				Green;
+	text-decoration:	none;
+	border-bottom:		1px dashed Green;
+}
+
+a.helpLink:hover {
+	color:				Red;
+	text-decoration:	none;
+	border-bottom:		1px dashed Red;
+}
+
+.tooltip {
+	position:	absolute;
+	width:		auto;
+	border:		1px Solid WindowFrame;
+	background:	Infobackground;
+	color:		InfoText;
+	font:		StatusBar;
+	font:		Status-Bar;
+	padding:	3px;
+	filter:		progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=3);
+	z-index:	10000;
+}
+
+.tooltip a,
+.tooltip a:hover {
+	color:		blue !important;
+	background:	none;
+}
+
+div.SR  { background-color: #ffffff; border: 2px solid black; padding: 16px 16px 64px 16px }
+
+.menu
+{
+	background-color: white;
+	color: black;
+	font-size: 8pt;
+	margin: 2px;
+	padding: 2px;
+	width: auto;
+	height: auto;
+}
+
+a { color: #5060c0; text-decoration: none; }
+a:hover	{ cursor: hand; }
+
+table	
+{
+	border-width: 0px;
+	border-collapse: collapse;
+	empty-cells: show;
+}
+
+th, th a
+{
+	background-color: #2a669a;
+	color: white;
+}
+
+table.inner, table.inner td, table.inner th, td.inner, th.inner
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #8abdf0;
+	padding: 1px 3px;
+	vertical-align: top;
+}
+
+.ttd 
+{
+	background-color: #8abdf0;
+	color: black;
+	font-weight: bold; 
+}
+.ttd a
+{
+	color: black;
+	
+}
+
+.inner tr.ttd td, .inner td.ttd 
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #2a669a;
+	text-align: left;
+	font-weight: bold;
+}
+.inner td.num { text-align: right; white-space: nowrap; }
+
+td.num { text-align: right; white-space: nowrap; }
+td.ico16 { text-align: center; vertical-align: middle; }
+td.ico16 img { width: 16px; height: 16px; }
+
+dt
+{
+	font-weight: bold;
+	
+}
+dd
+{
+	margin-left: 0px;
+	margin-bottom: 1.5em;
+	
+}
+
+.buttonBar {
+	display: block;
+	background-color: #cecece;
+	width: 100%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+}
+
+.buttonGroup {
+	display: inline;
+	background-color: #cecece;
+	border-width: 0px 1px 0px 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 4px;
+	padding-right: 4px;
+	height: 24px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.buttonGroup IMG {
+	width: 22px;
+	height: 22px;
+	align: absmiddle;
+}
+
+.buttonGroup SELECT {
+	height: 22px;
+}
+
+.dataArea {
+	display: inline;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
+}
+
+fieldset 
+{
+	width: 95%;
+	padding: 4px;
+	margin: 4px;
+	
+}
+

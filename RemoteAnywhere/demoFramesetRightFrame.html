@@ -1,0 +1,140 @@
+ <html> <head> 
+
+ <title>INTERN - RemotelyAnywhere</title> 
+ <link type="text/css" rel="stylesheet" href="default.css" /> 
+ </head> <body>
+</script> 
+<!-- OVERVIEW --> 
+<div class="tab-page" id="tabMain"> <h2 class="tab">System Overview</h2> 
+<table width="95%"> 
+<tr valign="top"><td width="75%">
+ <!-- WELCOME --> <b>Welcome to RemotelyAnywhere.</b> 
+ <!-- USER NAME --> You're logged in as: <b>USA\szafran</b><br><br> 
+ <!-- CURRENT DATE/TIME --> The current date and time is: <b><(-CurrentDate-)> <(-CurrentTime-)></b><br> 
+ <!-- RA UPTIME --> Running since <(-StartDate-)> <(-StartTime-)> (for <(-RunningHours-)> hours and <(-RunningMinutes-)> minutes), sent <(-KBSent-)> KB in response to <(-ClientRequests-)> client requests.<br> 
+ <!-- SCHEDULED REBOOT --> <br> 
+ <!-- MOST RECENT ACCESSES --> 
+ <table class="inner" width="95%"> 
+ <tr>
+ <th colspan="5">Most Recent Accesses</th>
+ </tr>
+<tr class="ttd">
+	 <td>Host Name</td> 
+	 <td>User</td>
+	 <td>Access Started</td>
+	 <td>Access Finished</td>
+	 <td>Idle Time</td>
+</tr> 
+<tr> 
+	 <td>208.0.125.137 (oc137.usachoice.net)</td>
+	 <td>USA\szafran</td> <td>4/23/2004 7:13 PM</td>
+	 <td>still on (for 13 minutes)</td>
+	 <td class="num">0:00:00:00</td>
+</tr> 
+<tr>
+	<td>127.0.0.1 (intern)</td>
+	<td></td>
+	<td>4/23/2004 7:13 PM</td>
+	<td>4/23/2004 7:13 PM</td>
+	<td></td>
+</tr> 
+</table>
+<br> 
+ <!-- CURRENT CONNECTIONS --> 
+ <table class="inner" width="95%">
+ <tr>
+	 <th colspan="5">Current Connections</th></tr>
+	 <tr onclick="window.location='connlist.html?type=remctrl&back=info.html'" style="cursor.hover:hand"> 
+	 <td class="ttd">Remote Control&nbsp;</td>
+	 <td align="center">&nbsp;no connections&nbsp;</td>
+ </tr> 
+ <tr onclick="window.location='ftpstatus.html?back=info.html'" style="cursor.hover:hand">
+	 <td class="ttd">FTP Server&nbsp;</td>
+	 <td align="center">&nbsp;no connections&nbsp;</td>
+ </tr>
+ <tr onclick="window.location='telnetconn.html'" style="cursor.hover:hand">
+	 <td class="ttd">Telnet / SSH Server&nbsp;</td>
+	 <td align="center">&nbsp;no connections&nbsp;</td>
+ </tr> 
+ <tr onclick="window.location='connlist.html?type=filexfer&back=info.html'" style="cursor.hover:hand">
+	 <td class="ttd">File Transfer&nbsp;</td>
+	 <td align="center">&nbsp;no connections&nbsp;</td>
+ </tr>
+ </table> 
+ <br>
+ <table class="inner" width="95%">
+ <tr>
+ 	<th colspan="2">System Information</th>
+ </tr>
+ <tr>
+	 <td class="ttd">Interactive User:</td>
+	 <td>USA\szafran</td>
+ </tr>
+ <tr>
+	 <td class="ttd">CPU:</td>
+	 <td><(-ProcessorVender-)>: <(-ProcessorName-)> at <(-ProcessorMHS-)> MHz </td>
+ </tr>
+ <tr>
+ <td class="ttd">Current CPU Utilization:</td>
+ <td><img src="/percentbar.png?percent=31&w=102&h=12&bg=white&cf=%237DDF85&cu=%23BE3D45" title="31%" width="102" height="12" align="absmiddle">&nbsp;31%</td> </tr> <tr> <td class="ttd">Physical memory:</td> 
+            <td><table width="22%" height="9" border="0" align="left" cellpadding="0" cellspacing="0">
+                <tr> 
+                  <td width="<(-Perfromance_P_Percent2-)>%" height="9" bgcolor="#CC0000"></td>
+                  <td width="<(-Perfromance_P_Percent1-)>%" bgcolor="#00CC00"></td>
+                </tr>
+              </table>
+              (Total: <(-Perfromance_P_Total-)>, Free: <(-Perfromance_P_Free-)>)</td>
+          </tr> <tr> 
+            <td class="ttd">Virtual memory:</td>
+            <td><table width="22%" height="9" border="0" align="left" cellpadding="0" cellspacing="0">
+                <tr> 
+                  <td width="<(-Perfromance_C_Percent1-)>%" height="9" bgcolor="#CC0000"></td>
+                  <td width="<(-Perfromance_C_Percent2-)>%" bgcolor="#00CC00"></td>
+                </tr>
+              </table>
+              (Total: <(-Perfromance_C_Total-)>, Free: <(-Perfromance_C_Free-)>)</td>
+          </tr> 
+		  <tr> 
+		  	<td class="ttd">System Bios:</td>
+		  	<td><(-BiosVersion-)>, <(-BiosDate-)></td>
+		  </tr>
+		  <tr>
+		  	<td class="ttd">Screen:</td>
+		  	<td>1280 x 1024 16 bits Video Bios: 98/12/17</td>
+		  </tr> 
+		  </table>
+		  <br>
+		  <table class="inner" width="95%">
+		  <tr>
+		  	<th>Operating System</th>
+		  </tr>
+		  <tr>
+		  	<td><(-WinVersion-)> </td>
+		  </tr>
+		  <tr>
+		  	<td>Installed at Wednesday, April 02, 2003 6:01:02 PM</td>
+		  </tr>
+		  <tr>
+		  	<td>Booted at Friday, April 23, 2004 3:57:49 PM (3 hours and 29 minutes ago)</td>
+		  </tr>
+		  </table>
+		  <br> 
+        <table class="inner" width="95%">
+          <tr>
+            <th>Installed Hotfixes:</th>
+          </tr>
+          <tr>
+            <td><a href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;KB820888" target="hotfix">KB820888</a>: 
+              Windows 2000 Hotfix - KB820888</td>
+          </tr>
+          <tr>
+            <td><a href="http://support.microsoft.com/default.aspx?scid=kb;EN-US;KB822831" target="hotfix">KB822831</a>: 
+              Windows 2000 Hotfix - KB822831</td>
+          </tr>
+        </table>
+        <br> </td> <td> 
+ <!-- SECURITY INFO --> <b>Security</b><br> Authentication: User name/Password<br> Transport: Secure&nbsp;<img src="img/ico_evt_lock.png?bg=white" align="absmiddle" width="16" height="16"> <br><br> 
+ <!-- QUICKLINKS --> <table border="1" width="100%" cellpadding="8" style="border-collapse:separate;border-spacing:0px 6px"> <tr><td align="center"><font color="#388ccd" style="font-size:14pt;"><a href="qlinks.html" title="Edit your QuickLinks">QuickLinks</a></font></td></tr> <tr><td colspan="2" align="center">Add your own links here by clicking <img src="img/ico_favourite.png?bg=white" title="&quot;Add this page to your QuickLinks&quot;" align="absmiddle"> on any content page.</td></tr> </table> </td> </tr> </table> </div> 
+  </div>
+</div>
+</body> </html> 
