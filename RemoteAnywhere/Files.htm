@@ -1,0 +1,752 @@
+ <html> <head> <title>INTERN - RemotelyAnywhere</title>
+  <script type="text/javascript">
+  var tipTimer = null;
+var tipX = null;
+var tipY = null;
+var tipHtml = null;
+var tipAnchor = null;
+function showTip(e, sHtml, bHideSelects, sAnchorType) {
+hideTip(e);
+// find anchor element
+var el = e.target || e.srcElement;
+while (el.tagName != sAnchorType)
+el = el.parentNode;
+// remember attributes
+tipX = e.clientX;
+tipY = e.clientY;
+tipAnchor = el;
+tipHtml = sHtml;
+tipHandler.hideSelects = Boolean(bHideSelects);
+// set timer
+tipTimer = setTimeout("showTip2()", 400);
+}
+function showTip2() {
+// is there already a tooltip? If so, remove it
+if (tipAnchor._tip)
+tipHandler.hideTip(tipAnchor);
+// create element and insert last into the body
+tipHandler.createTip(tipAnchor, tipHtml);
+// position tooltip
+tipHandler.positionToolTip(tipX, tipY);
+// add a listener to the blur event.
+// When blurred remove tooltip and restore anchor
+tipAnchor.onblur = tipHandler.anchorBlur;
+tipAnchor.onkeydown = tipHandler.anchorKeyDown;
+if ( navigator.userAgent.indexOf('MSIE') < 0 )	// timeout to hide tooltip
+tipTimer = setTimeout("tipHandler.hideTip(tipAnchor)", 15000);
+}
+function hideTip(e) {
+if (tipTimer) {
+clearTimeout(tipTimer);
+tipTimer = null;
+}
+// find anchor element
+var el = e.target || e.srcElement;
+tipHandler.hideTip(el);
+}
+var tipHandler = {
+hideSelects:	false,
+tip:			null,
+showSelects:	function (bVisible) {
+if (!this.hideSelects) return;
+// only IE actually do something in here
+var selects = [];
+if (document.all)
+selects = document.all.tags("SELECT");
+var l = selects.length;
+for	(var i = 0; i < l; i++)
+selects[i].runtimeStyle.visibility = bVisible ? "" : "hidden";	
+},
+create:	function () {
+var d = document.createElement("DIV");
+d.className = "tooltip";
+d.onmousedown = this.tipMouseDown;
+d.onmouseup = this.tipMouseUp;
+document.body.appendChild(d);		
+this.tip = d;
+},
+createTip:	function (el, sHtml) {
+if (this.tip == null) {
+this.create();
+}
+var d = this.tip;
+d.innerHTML = sHtml;
+d._boundAnchor = el;
+el._tip = d;
+return d;
+},
+tipMouseDown:	function (e) {
+var d = this;
+var el = d._boundAnchor;
+if (!e) e = event;
+var t = e.target || e.srcElement;
+while (t.tagName != "A" && t != d)
+t = t.parentNode;
+if (t == d) return;
+
+el._onblur = el.onblur;
+el.onblur = null;
+},
+tipMouseUp:	function () {
+var d = this;
+var el = d._boundAnchor;
+el.onblur = el._onblur;
+el._onblur = null;
+el.focus();
+},	
+anchorBlur:	function (e) {
+var el = this;
+tipHandler.hideTip(el);
+},
+anchorKeyDown:	function (e) {
+if (!e) e = window.event
+if (e.keyCode == 27) {
+tipHandler.hideTip(this);
+}
+},
+removeTip:	function (d) {
+d._boundAnchor = null;
+d.style.filter = "none";
+d.innerHTML = "";
+d.onmousedown = null;
+d.onmouseup = null;
+d.parentNode.removeChild(d);
+},
+hideTip:	function (el) {
+var d = el._tip;
+if (d != null) {
+d.style.visibility = "hidden";
+el.onblur = null;
+el._onblur = null;
+el._tip = null;
+el.onkeydown = null;
+
+this.showSelects(true);
+}
+},
+positionToolTip:	function (clientX, clientY) {
+this.showSelects(false);		
+var scroll = this.getScroll();
+var d = this.tip;
+// width
+if (d.offsetWidth >= scroll.width)
+d.style.width = scroll.width - 10 + "px";
+else
+d.style.width = "";
+// left
+if (clientX > scroll.width - d.offsetWidth)
+d.style.left = scroll.width - d.offsetWidth + scroll.left + "px";
+else
+d.style.left = clientX - 2 + scroll.left + "px";
+// top
+if (clientY + d.offsetHeight + 18 < scroll.height)
+d.style.top = clientY + 18 + scroll.top + "px";
+else if (clientY - d.offsetHeight > 0)
+d.style.top = clientY + scroll.top - d.offsetHeight + "px";
+else
+d.style.top = scroll.top + 5 + "px";
+
+d.style.visibility = "visible";
+},
+getScroll:	function () {
+if (document.all && typeof document.body.scrollTop != "undefined") {
+var ieBox = document.compatMode != "CSS1Compat";
+var cont = ieBox ? document.body : document.documentElement;
+return {
+left:	cont.scrollLeft,
+top:	cont.scrollTop,
+width:	cont.clientWidth,
+height:	cont.clientHeight
+};
+} else {
+return {
+left:	window.pageXOffset,
+top:	window.pageYOffset,
+width:	window.innerWidth,
+height:	window.innerHeight
+};
+}
+
+}
+};
+  </script> <link type="text/css" rel="stylesheet" href="/css/tooltip.css" />
+   <link type="text/css" rel="stylesheet" href="/css/multiselectlist.css" /> <script type="text/javascript" src="/js/selectableelements.js">
+   </script>
+   <style>
+   
+
+.window {
+	background-color: white;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	
+		border: 1px solid WindowFrame;
+		
+	
+}
+
+.subwindow {
+	background-color: white;
+	color: black;
+	border: 1px solid WindowFrame;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	visibility: hidden;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=4);
+	z-index: 10001;
+}
+
+.titleBar {
+	
+		background-color: #2a669a;
+		color: white;
+		
+			width: 100%;
+		
+		height: 22px;
+		font-family: "MS Sans Serif", "Arial", "Helvetica", sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		text-align: left;
+		vertical-align: middle;
+		padding: 0px 2px 4px .5em;
+		margin: 0px;
+	
+	white-space: nowrap;
+	cursor: default;
+	overflow: hidden;
+}
+
+.titleBarButtons {
+  border-style: none;
+  border-width: 0px;
+  vertical-align: middle;
+  width: 50px;
+  height: 14px;
+}
+
+.clientArea {
+  background-color: white;
+  border-width: 0px;
+  color: black;
+  font-family: "Verdana", "Arial", "Helvetica", sans-serif;
+  font-size: 8pt;
+  margin: 0px 0px 0px 0px;
+  overflow: auto;
+  padding: 1px;
+}
+
+body, table, td, th, input, select 
+{
+	font-family: "Verdana", "Arial";
+	font-size: 8pt;
+}
+
+body	
+{
+	background-color: #8abdf0;
+	margin: 2px;
+	
+	width: auto;
+	height: auto;
+}
+
+body.title	
+{
+	background-color: white;
+	color: #000040;
+	topmargin: 2px;
+}
+
+h1 { font-size: 12pt; }
+h2 { font-size: 11pt; }
+h3 { font-size: 10pt; }
+
+
+a.helpLink {
+	color:				Green;
+	text-decoration:	none;
+	border-bottom:		1px dashed Green;
+}
+
+a.helpLink:hover {
+	color:				Red;
+	text-decoration:	none;
+	border-bottom:		1px dashed Red;
+}
+
+.tooltip {
+	position:	absolute;
+	width:		auto;
+	border:		1px Solid WindowFrame;
+	background:	Infobackground;
+	color:		InfoText;
+	font:		StatusBar;
+	font:		Status-Bar;
+	padding:	3px;
+	filter:		progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=3);
+	z-index:	10000;
+}
+
+.tooltip a,
+.tooltip a:hover {
+	color:		blue !important;
+	background:	none;
+}
+
+div.SR  { background-color: #ffffff; border: 2px solid black; padding: 16px 16px 64px 16px }
+
+.menu
+{
+	background-color: white;
+	color: black;
+	font-size: 8pt;
+	margin: 2px;
+	padding: 2px;
+	width: auto;
+	height: auto;
+}
+
+a { color: #5060c0; text-decoration: none; }
+a:hover	{ cursor: hand; }
+
+table	
+{
+	border-width: 0px;
+	border-collapse: collapse;
+	empty-cells: show;
+}
+
+th, th a
+{
+	background-color: #2a669a;
+	color: white;
+}
+
+table.inner, table.inner td, table.inner th, td.inner, th.inner
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #8abdf0;
+	padding: 1px 3px;
+	vertical-align: top;
+}
+
+.ttd 
+{
+	background-color: #8abdf0;
+	color: black;
+	font-weight: bold; 
+}
+.ttd a
+{
+	color: black;
+	
+}
+
+.inner tr.ttd td, .inner td.ttd 
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #2a669a;
+	text-align: left;
+	font-weight: bold;
+}
+.inner td.num { text-align: right; white-space: nowrap; }
+
+td.num { text-align: right; white-space: nowrap; }
+td.ico16 { text-align: center; vertical-align: middle; }
+td.ico16 img { width: 16px; height: 16px; }
+
+dt
+{
+	font-weight: bold;
+	
+}
+dd
+{
+	margin-left: 0px;
+	margin-bottom: 1.5em;
+	
+}
+
+.buttonBar {
+	display: block;
+	background-color: #cecece;
+	width: 100%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+}
+
+.buttonGroup {
+	display: inline;
+	background-color: #cecece;
+	border-width: 0px 1px 0px 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 4px;
+	padding-right: 4px;
+	height: 24px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.buttonGroup IMG {
+	width: 22px;
+	height: 22px;
+	align: absmiddle;
+}
+
+.buttonGroup SELECT {
+	height: 22px;
+}
+
+.dataArea {
+	display: inline;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
+}
+
+fieldset 
+{
+	width: 95%;
+	padding: 4px;
+	margin: 4px;
+	
+}
+
+   </style>
+    <script language="JavaScript">
+
+function goDrive(name, size) {
+if (size == '') {
+alert('No disk in drive');
+} else {
+document.body.style.filter = 'progid:DXImageTransform.Microsoft.Fade(Percent=20,Duration=0.2)';
+window.location='dir.html?dir=' + escape(name);
+}
+}
+</script> <script language="JavaScript">
+	function dirTree(dir, fn) {
+		
+		if (typeof(fn) == "undefined") {
+			fn = dir;
+			dir = eval(fn);
+		}
+		var win = null;
+		var opt = null;
+		var url = "dirtree.html?dir=" + escape(dir) + "&fn=" + escape(fn) + "&rnd=" + Math.random();
+		var w = 300;
+		var h = 500;
+		if (window.showModelessDialog) {
+			opt = "help:0;resizable:1;dialogWidth:"+w+"px;dialogHeight:"+h+"px";
+			win = window.showModelessDialog(url,"",opt);
+		} else {
+			opt = "width="+w+",height="+h+",resizable=1,scrollbars=1";
+			win = window.open(url,"",opt);
+		}
+		win.opener = self;
+		
+	}
+</script> </head> <body> <div class="window"> <div class="titleBar"><img src="img/menu_openfolder.png?bg=%232a669a" align="absmiddle">&nbsp;File Manager</div> <!-- TOOLBAR -> <div class="buttonBar"> <div class="buttonGroup"> <a href="title.html?favname=File%20Manager&favicon=menu_openfolder.png&favargs=drives%2Ehtml" target="title"><img src="img/ico_favourite.gif" border="0" title="Add this page to your QuickLinks"></a> <a href="drives.html?3000923635"><img src="img/ico_refresh.gif" border="0" title="Refresh"></a> </div> </div> <div class="dataArea"> <table id="dlist" class="inner" onselectstart="return false"> <thead> <tr><th colspan=5>INTERN</th></tr> </thead> <thead> <tr class="ttd"> <th>&nbsp;</th> <th colspan="4">Name</th> </tr> </thead> <tbody> <tr onmouseover="showTip(event,'\
+<center><b>Desktop</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop<br>\
+<b>Description:</b> Desktop<br>\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B34&size=16" width="16" height="16"></td> <td colspan="4">Desktop</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>My Documents</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\My Documents<br>\
+<b>Description:</b> Stores and manages documents<br>\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\My Documents', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=mydocs%2Edll%3B0&size=16" width="16" height="16"></td> <td colspan="4">My Documents</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>aaa</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\aaa<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\aaa', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">aaa</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Band</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Band<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Band', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Band</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>boot</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\boot<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\boot', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">boot</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>CLIENTSER</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\CLIENTSER<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\CLIENTSER', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">CLIENTSER</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>CommandArgu</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\CommandArgu<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\CommandArgu', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">CommandArgu</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Corel</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Corel<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Corel', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Corel</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Enum</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Enum<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Enum', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Enum</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Enum2</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Enum2<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Enum2', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Enum2</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Fader</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Fader<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Fader', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Fader</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Fader2</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Fader2<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Fader2', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Fader2</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Firewall</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Firewall<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Firewall', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Firewall</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>fonts</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\fonts<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\fonts', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">fonts</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>img</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\img<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\img', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">img</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>MP35</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\MP35<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\MP35', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">MP35</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>MyYcht</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\MyYcht<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\MyYcht', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">MyYcht</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>ndir</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\ndir<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\ndir', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">ndir</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>New Folder</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\New Folder<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\New Folder', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">New Folder</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>New Folder (2)</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\New Folder (2)<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\New Folder (2)', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">New Folder (2)</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>New Folder (3)</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\New Folder (3)<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\New Folder (3)', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">New Folder (3)</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>New Folder (6)</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\New Folder (6)<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\New Folder (6)', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">New Folder (6)</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>New Folder (7)</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\New Folder (7)<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\New Folder (7)', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">New Folder (7)</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>pstool</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\pstool<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\pstool', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">pstool</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>richtb</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\richtb<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\richtb', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">richtb</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>rtb</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\rtb<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\rtb', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">rtb</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>smc</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\smc<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\smc', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">smc</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>today</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\today<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\today', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">today</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Tree</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Tree<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Tree', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Tree</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>up</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\up<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\up', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">up</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>utopia</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\utopia<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\utopia', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">utopia</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>vamp</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\vamp<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\vamp', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">vamp</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>VB</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\VB<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\VB', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">VB</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>vmp</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\vmp<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\vmp', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">vmp</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>web</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\web<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\web', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">web</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Winsock</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\Winsock<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\Winsock', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">Winsock</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>ycht4</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\ycht4<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\ycht4', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">ycht4</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>ycht5</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\ycht5<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\ycht5', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">ycht5</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>yester</b></center>\
+<b>Path:</b> C:\\Documents and Settings\\szafran\\Desktop\\yester<br>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\Documents and Settings\\szafran\\Desktop\\yester', 'x')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5CWINNT%5Csystem32%5CSHELL32%2Edll%3B3&size=16" width="16" height="16"></td> <td colspan="4">yester</td> </tr> </tbody> <thead> <tr class="ttd"> <th>&nbsp;</th> <th>Name</th> <th>Size</th> <th>Free</th> <th>% in use</th> </tr> </thead> <tbody> <tr onmouseover="showTip(event,'\
+<center><b>A:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('A:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=A%3A%5C&size=16" width="16" height="16"></td> <td>A:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>C:\\</b></center>\
+\
+\
+<b>Volume Serial Number:</b> 641794A0<br>\
+<b>File System:</b> NTFS<br>\
+<b>Attributes:</b><br>\
+- Maximum file name length is 255 characters<br>\
+- Case is preserved<br>\
+- Case sensitive<br>\
+- Supports Unicode<br>\
+- Persistent ACLs<br>\
+- Supports file compression<br>\
+\
+- Supports encryption<br>\
+- Supports object IDs<br>\
+- Supports reparse points<br>\
+- Supports sparse files<br>\
+- Supports quotas<br>\
+\
+<b>Permissions:</b><br>\
+- Read (R)<br>\
+- Write (W)<br>\
+- Execute (X)<br>\
+- Delete (D)<br>\
+- Change Permissions (P)<br>\
+- Take Ownership (O)<br>\
+\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('C:\\', '20012072960')"> <td class="ico16"><img src="fileicon.png?bg=white&path=C%3A%5C&size=16" width="16" height="16"></td> <td>C:\</td> <td class="num">19,085.00 MB</td> <td class="num">6,360.59 MB</td> <td><img src="/percentbar.png?percent=67&w=102&h=12&bg=white&cf=%237DDF85&cu=%23BE3D45" title="67%" width="102" height="12" align="absmiddle">&nbsp;67%</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>D:\\</b></center>\
+\
+<b>Volume Name:</b> My Disc<br>\
+<b>Volume Serial Number:</b> CFC9DCBF<br>\
+<b>File System:</b> CDFS<br>\
+<b>Attributes:</b><br>\
+- Maximum file name length is 110 characters<br>\
+\
+- Case sensitive<br>\
+- Supports Unicode<br>\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('D:\\', '72851456')"> <td class="ico16"><img src="fileicon.png?bg=white&path=D%3A%5C&size=16" width="16" height="16"></td> <td>D:\</td> <td class="num">69.47 MB</td> <td class="num">0.00 MB</td> <td><img src="/percentbar.png?percent=100&w=102&h=12&bg=white&cf=%237DDF85&cu=%23BE3D45" title="100%" width="102" height="12" align="absmiddle">&nbsp;100%</td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>E:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('E:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=E%3A%5C&size=16" width="16" height="16"></td> <td>E:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>F:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('F:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=F%3A%5C&size=16" width="16" height="16"></td> <td>F:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>G:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('G:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=G%3A%5C&size=16" width="16" height="16"></td> <td>G:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>R:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('R:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=R%3A%5C&size=16" width="16" height="16"></td> <td>R:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>X:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('X:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=X%3A%5C&size=16" width="16" height="16"></td> <td>X:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> <tr onmouseover="showTip(event,'\
+<center><b>Z:\\</b></center>\
+\
+<i>No disk in drive</i>\
+\
+',false,'TR')" onmouseleave="hideTip(event)"
+ondblclick="goDrive('Z:\\', '')"> <td class="ico16"><img src="fileicon.png?bg=white&path=Z%3A%5C&size=16" width="16" height="16"></td> <td>Z:\</td> <td colspan="3" align="center"><a href="drives.html?scan=all&3000923635">click to scan</a></td> </tr> </tbody> <tfoot> <tr> <td class="ico16">S</td> <td>Total</td> <td class="num">19,154.47 MB</td> <td class="num">6,360.59 MB</td> <td><img src="/percentbar.png?percent=67&w=102&h=12&bg=white&cf=%237DDF85&cu=%23BE3D45" title="67%" width="102" height="12" align="absmiddle">&nbsp;67%</td> </tr> </tfoot> </table><br> <script type="text/javascript">
+trows = new SelectableTableRows(document.getElementById("dlist"), false);
+</script> <form name="go" action="dir.html" method="get"> <table class="inner"> <tr valign="middle"> <th>Go:</th> <td><input type="text" name="dir" value="" size="30" title="Jump to this folder"
+onfocus="this.select()"><a href="javascript:dirTree('document.forms.go.dir.value')"><img src="img/ico_browse.gif" title="Browse" align="absmiddle" border="0"></a></td> <td class="ttd"><input type="submit" value="Go" title="Jump to this folder"></td> </tr> </table> </form> </div> </div> </body> </html> 

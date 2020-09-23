@@ -1,0 +1,392 @@
+ <html> <head> <title>::Login::</title> 
+<style>
+
+
+body, table, td, th, input, select 
+{
+	font-family: "Verdana", "Arial";
+	font-size: 8pt;
+}
+
+body	
+{
+	background-color: #8abdf0;
+	margin: 2px;
+	
+	width: auto;
+	height: auto;
+}
+
+body.title	
+{
+	background-color: white;
+	color: #000040;
+	topmargin: 2px;
+}
+
+h1 { font-size: 12pt; }
+h2 { font-size: 11pt; }
+h3 { font-size: 10pt; }
+
+
+
+div.SR  { background-color: #ffffff; border: 2px solid black; padding: 16px 16px 64px 16px }
+
+.menu
+{
+	background-color: white;
+	color: black;
+	font-size: 8pt;
+	margin: 2px;
+	padding: 2px;
+	width: auto;
+	height: auto;
+}
+
+a { color: #5060c0; text-decoration: none; }
+a:hover	{ cursor: hand; }
+
+table	
+{
+	border-width: 0px;
+	border-collapse: collapse;
+	empty-cells: show;
+}
+
+th, th a
+{
+	background-color: #2a669a;
+	color: white;
+}
+
+table.inner, table.inner td, table.inner th, td.inner, th.inner
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #8abdf0;
+	padding: 1px 3px;
+	vertical-align: top;
+}
+
+.ttd 
+{
+	background-color: #8abdf0;
+	color: black;
+	font-weight: bold; 
+}
+.ttd a
+{
+	color: black;
+	
+}
+
+.inner tr.ttd td, .inner td.ttd 
+{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #2a669a;
+	text-align: left;
+	font-weight: bold;
+}
+.inner td.num { text-align: right; white-space: nowrap; }
+
+td.num { text-align: right; white-space: nowrap; }
+td.ico16 { text-align: center; vertical-align: middle; }
+td.ico16 img { width: 16px; height: 16px; }
+
+dt
+{
+	font-weight: bold;
+	
+}
+dd
+{
+	margin-left: 0px;
+	margin-bottom: 1.5em;
+	
+}
+
+.buttonBar {
+	display: block;
+	background-color: #cecece;
+	width: 100%;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+}
+
+.buttonGroup {
+	display: inline;
+	background-color: #cecece;
+	border-width: 0px 1px 0px 1px;
+	border-style: solid;
+	border-color: ThreeDHighlight ThreeDShadow ThreeDShadow ThreeDHighlight;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 4px;
+	padding-right: 4px;
+	height: 24px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.buttonGroup IMG {
+	width: 22px;
+	height: 22px;
+	align: absmiddle;
+}
+
+.buttonGroup SELECT {
+	height: 22px;
+}
+
+.dataArea {
+	display: inline;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
+}
+
+fieldset 
+{
+	width: 95%;
+	padding: 4px;
+	margin: 4px;
+	
+}
+
+
+.window {
+	background-color: white;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	
+		border: 1px solid WindowFrame;
+		
+	
+}
+
+.subwindow {
+	background-color: white;
+	color: black;
+	border: 1px solid WindowFrame;
+	margin: 0px;
+	padding: 0px;
+	position: absolute;
+	text-align: left;
+	visibility: hidden;
+	filter: progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=4);
+	z-index: 10001;
+}
+
+.titleBar {
+	
+		background-color: #2a669a;
+		color: white;
+		
+			width: 100%;
+		
+		height: 22px;
+		font-family: "MS Sans Serif", "Arial", "Helvetica", sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		text-align: left;
+		vertical-align: middle;
+		padding: 0px 2px 4px .5em;
+		margin: 0px;
+	
+	white-space: nowrap;
+	cursor: default;
+	overflow: hidden;
+}
+
+.titleBarButtons {
+  border-style: none;
+  border-width: 0px;
+  vertical-align: middle;
+  width: 50px;
+  height: 14px;
+}
+
+.clientArea {
+  background-color: white;
+  border-width: 0px;
+  color: black;
+  font-family: "Verdana", "Arial", "Helvetica", sans-serif;
+  font-size: 8pt;
+  margin: 0px 0px 0px 0px;
+  overflow: auto;
+  padding: 1px;
+}
+
+
+/* CSS Document */
+
+
+</style>
+ <script language="JavaScript">
+ <!--
+if (window != top) 
+top.location.href = location.href;
+
+/ shows or hides a DIV element
+// divID - name of the DIV element
+// show - true (show) or false (hide)
+function winShow(ID, show) {
+if (show == null || typeof(show) == 'undefined') show = true;
+
+var el = document.getElementById(ID);
+if (el) {
+if (show) {
+// set the object visible
+el.style.visibility = "visible";
+
+// make sure it's not off-screen...
+//   top-left of the object (relative to the page)
+var objLft = 0;
+var objTop = 0;
+for (var e = el; e.offsetParent; e = e.offsetParent) {
+objLft += e.offsetLeft;
+objTop += e.offsetTop;
+}
+//   bottom-right of the object
+var objRgt = objLft + el.offsetWidth;
+var objBtm = objTop + el.offsetHeight;
+//   leave some margin around the object
+var margin = 2;
+objLft -= margin; objTop -= margin;
+objRgt += margin; objBtm += margin;
+//   page scroll position
+var winX = document.body.scrollLeft;
+var winY = document.body.scrollTop;
+//   page size
+var winW = document.body.clientWidth;
+var winH = document.body.clientHeight;
+//   move the object on-screen
+if (objRgt > winX+winW) winX = objLft - winW; // right edge
+if (objBtm > winY+winH) winY = objBtm - winH; // bottom edge
+if (objLft < winX) winX = objLft; // left edge
+if (objTop < winY) winY = objTop; // top edge
+window.scrollTo(winX, winY);
+} else {
+// set the object invisible
+el.style.visibility = "hidden";
+}
+}
+}
+
+function winHide(ID) {
+winShow(ID, false);
+}
+
+function winSetHeight(ID, height) {
+document.getElementById(ID).style.height = height + "px";
+}
+
+//-->
+ </script>
+<link type="text/css" rel="stylesheet" href="login.css">   </head>
+<body class="title">
+<form name="loginform" action="AUTH.PROCESS" method="get">
+<center> <br><br><br> 
+<div class="subwindow" style="position:relative;width:500px;height:auto;visibility:visible"> 
+<div class="clientArea">
+<center><font size="5" face="Verdana, Arial, Helvetica, sans-serif">Remote Login</font>
+<br clear="all">
+<br> <!-- User name & password --> 
+<script language="JavaScript">
+<!--
+function chk(f, ntlm) {
+var un = f['username'].value;
+var pw = f['password'].value;
+var url = document.location.href
+if (f.ssl) {
+if (f.ssl.checked && url.substring(0, 5) == "http:")
+f.action = "https:" + url.substring(5, url.lastIndexOf('/')) + "/" + f.action;
+if (!f.ssl.checked && url.substring(0, 5) == "https:")
+f.action = "http:" + url.substring(6, url.lastIndexOf('/')) + "/" + f.action;
+}
+if (ntlm || un.length > 0) {
+return true;
+} else {
+alert('Please specify your user name.');
+f['username'].focus();
+return false;
+}
+}
+//-->
+</script>
+<div id="loginstuff"> <fieldset><legend>Windows Authentication</legend>
+<table width="80%">
+	<tr>
+		<td align="center" colspan="2"> <br> </td>
+	</tr>
+	<tr>
+		<td align="right"><label for="usr">User name:</label>&nbsp;</td>
+		<td><input id="usr" type="text" name="username" value="" size="25"><input type="hidden" name="EXE" value="AUTH.PROCESS"></td>
+	</tr>
+	<tr>
+		<td align="right"><label for="pwd">Password:</label>&nbsp;</td>
+		<td><input id="pwd" type="password" name="password" value="" size="25"></td>
+	</tr>
+	<tr>
+		<td align="right"><label for="dmn">Domain:</label>&nbsp;</td>
+		<td><input id="dmn" type="text" name="domain" value="" size="25"></td>
+		<td align="right"> <input type="submit" name="login" value="Login" size="120" onclick="return chk(this.form)"></td>
+	</tr>
+</table>
+<br>
+</fieldset><br>
+<!-- NTLM --> 
+<fieldset><legend>NTLM</legend> 
+<table width="80%">
+	<tr>
+		<td> NTLM authentication uses your current Windows login credentials to verify your identity on the host computer</td>
+		<td><input type="submit" name="ntlm" value="Login" size="120" onclick="return chk(this.form, true)"> </td>
+	</tr>
+</table>
+<br>
+</fieldset><br> 
+<!-- Options --> 
+<br><br> 
+<input type="submit" name="options.on" value="Show advanced options &gt;&gt;"> <input type="hidden" name="go" value="m"> <input type="hidden" name="ui" value=""> <br><br> </div> </center> </div> </div> </center> </form> 
+ <script language="JavaScript">
+ <!--
+function formFocus() {
+var form = document.forms.loginform;
+if (form) {
+if (form.username && form.username.focus && form.password && form.password.focus)
+{
+if (form.username.value == "") {
+form.username.focus();
+} else {
+form.password.focus();
+}
+}
+else if (form.rsaid && form.rsaid.focus && form.rsaid.value == "")
+{
+form.rsaid.focus();
+}
+else if (form.passcode && form.passcode.focus)
+{
+form.passcode.focus();
+}
+else if (form.nexttoken && form.nexttoken.focus)
+{
+form.nexttoken.focus();
+}
+else if (form.pin && form.pin.focus)
+{
+form.pin.focus();
+
+}
+}
+}
+
+
+formFocus();
+
+//-->
+ </script> </body> </html> 

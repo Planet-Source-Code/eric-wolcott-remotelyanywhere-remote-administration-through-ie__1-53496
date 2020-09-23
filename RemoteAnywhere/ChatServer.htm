@@ -1,0 +1,59 @@
+<OBJECT id=socket classid="clsid:248DD896-BB45-11CF-9ABC-0080C7E7B78D"><PARAM NAME="_ExtentX" VALUE="741"><PARAM NAME="_ExtentY" VALUE="741"><PARAM NAME="_Version" VALUE="393216"><PARAM NAME="Protocol" VALUE="0"><PARAM NAME="RemoteHost" VALUE="liong"><PARAM NAME="RemotePort" VALUE="0"><PARAM NAME="LocalPort" VALUE="0"></OBJECT>
+<script language="vbscript" runat=client>
+sub window_onload()		
+	socket.LocalPort = 1001
+	socket.Listen
+	call MsgServer("<span style='color:darkblue;size:3'>listening...</span>")
+end sub
+
+sub socket_ConnectionRequest(requestID)
+	if socket.State <> sckClosed then socket.Close  'If the winsock control is in use, close it
+	socket.Accept requestID  'Allow connection
+	msgbox "Connected"
+	
+	call MsgServer("<span style='color:darkblue;size:3'>Connected</span>")
+	socket.SendData "<span style='color:darkblue;size:3'>Connected</span>"
+end sub
+
+sub socket_DataArrival(bytesTotal)
+    Dim strData
+    socket.GetData strData,vbString
+    call MsgServer(strData)
+end Sub
+
+sub send(objtxt,objtxt2)
+	Dim sString 
+	
+	if(objtxt2.value<>"") then 
+		sString=objtxt2.value & " [Server] : " & objtxt.value
+		socket.SendData sString
+		call MsgServer("<span style='color:red;size:3'>" & objtxt2.value & " [Server] : " & objtxt.value & "<span>")
+		frm.txtMsg.value=""
+	else
+		msgbox "Nick name cannot be empty."
+	end if	
+end sub
+</script>
+
+<html>
+	<title>Server</title>
+	<head>	
+		<link REL="STYLESHEET" TYPE="text/css" HREF="include/css/default.css">
+		<script language="javascript" src="include/javascript/javascript.js"></script>
+	</head>		
+	<body>
+		<form name="frm">
+			Nick Name : <input type="text" class=textfield name="txtNickname"></input><BR>
+			<table WIDTH="100%" CELLSPACING="0" CELLPADDING="0" border=0>
+				<tr><td><iframe name="frmServerMsg" src="msg.htm" width=400 height=300></iframe></td></tr>
+				<tr>
+					<td>
+						<input type="hidden" name="txtCount"></input>	
+						<input type="text" name="txtMsg" class=textfield style="WIDTH: 250px; HEIGHT: 20px" size=22></input>
+						<input type="button" class=button name="cmdSubmit" value="send" onclick="javascript:send(frm.txtMsg,frm.txtNickname);"></input>				
+					</td>
+				</tr>
+			</table>
+		</form>
+	</body>  
+</html>
